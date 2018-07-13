@@ -84,31 +84,32 @@ definitions:
     properties:
       apiKey:
         type: "string"
-        description: "A key provided by Transbank"
+        description: "Commerce public ID. It's provided by Transbank with the Sharde Secret Key."
         example: "mUc0GxYGor6X8u-_oB3e-HWJulRG01WoC96-_tUA3Bg"
       appKey:
         type: "string"
-        description: "A key provided by Transbank to identify the comerce"
+        description: "Identify the version of API. It's always same and only change in diferent versions
+          of SDK and that's the reason why its hidden of user interface."
         example: "04533c31-fe7e-43ed-bbc4-1c8ab1538af"
       externalUniqueNumber:
         type: "integer"
         format: "int64"
-        description: "Unique id number to identify the transaction"
+        description: "Unique id number to identify the shopping cart"
         example: 1530288106
       total:
         type: "integer"
         format: "int64"
-        description: "Transation total sum (Items.amount)"
+        description: "Total amount of the order"
         example: 27500
       itemsQuantity:
         type: "integer"
         format: "int32"
-        description: "Total items in the transaction"
+        description: "Quantity of items in the shopping cart"
         example: 2
       issuedAt:
         type: "integer"
         format: "int64"
-        description: "Date of transaction in seconds"
+        description: "Date of transaction in seconds (Unix Time)"
         example: 1530288096
       items:
         type: "array"
@@ -116,9 +117,15 @@ definitions:
           $ref: "#/definitions/Item"
       callbackUrl:
         type: "string"
-        description: "Callback URL. This should be what page they will call to inform the transaction response,
-          but it's apparently not used"
+        description: "Not really used becouse transbank never call this. But its necesary beacouse the sign
+          use this in the hash. In the SDK this field is hidden to user interface and the SDK send a 
+          FAKE_URL_CALLBACK"
         example: "http://your.host/your.callback.page"
+      channel:
+        type: "string"
+        description: "Payment origen channel (WEB or MOBILE). By default the service asume the WEB channel. the
+          SDK send alway WEB in this field and it's not present in the user interface"
+        example: "WEB"
       signature:
         type: "string"
         description: "A hash made with some data of this object is encrypted with SHA256 using a shared secret between
@@ -126,7 +133,9 @@ definitions:
         example: "2CJpn9togRYyy+MwEXaJiW1hySMGfLlgKLgARF+flJs\u003d"
       generateOttQrCode:
         type: "boolean"
-        description: "Indicate if you want to receive a base64 QR to print in your web. Should be always true"
+        description: "Indicate if you want to receive a base64 QR to print in your web. This field was added
+          later in the API and in order to be retrocompatible its optional and false by default.
+          The SDK is to integrate the new Onepay using QR so the SDK send it always true."
         default: "true"
         example: "true"
 
